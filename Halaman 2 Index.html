@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk ke Musel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .fade-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+        h2 {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            margin-bottom: 30px;
+        }
+        .text-bold {
+            font-weight: bold;
+        }
+        .phone-input-container {
+            position: relative;
+            padding: 10px 0;
+            border-bottom: 2px solid #ccc;
+            margin-top: 15px;
+            margin-bottom: 40px;
+        }
+        .phone-input-container input {
+            border: none;
+            outline: none;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            padding: 5px 0;
+        }
+        .btn-lanjutkan {
+            background-color: #000080;
+            color: #fff;
+            padding: 15px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-sizing: border-box;
+        }
+        .btn-lanjutkan:hover {
+            background-color: #000066;
+        }
+        .help-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555;
+            width: 100%;
+        }
+        .help-section a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .help-section a:hover {
+            text-decoration: underline;
+        }
+        .help-text {
+            margin-right: auto;
+        }
+        .logo-section {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .logo-section img {
+            max-width: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="loginBox">
+    <div class="close-btn" id="closeBtn">&times;</div>
+    <h2>Masuk ke Musel</h2>
+    <p>Untuk <span class="text-bold">Daftar</span> atau <span class="text-bold">Login</span></p>
+    <p><span class="text-bold">Masukkan Nomor HP</span></p>
+
+    <div class="phone-input-container">
+        <input type="tel" id="phoneNumber" placeholder="08XXXXXXXXXX" maxlength="13">
+    </div>
+
+    <button class="btn-lanjutkan" id="lanjutBtn">Lanjutkan</button>
+
+    <div class="help-section">
+        <span class="help-text">Perlu Bantuan ?</span>
+        <a href="#">Hubungi Customer Service</a>
+    </div>
+
+    <div class="logo-section">
+        <a href="https://musel.com" class="logo-link">
+            <img src="https://musel14.wordpress.com/wp-content/uploads/2025/09/wp-17577853544847632536777576567851.png" alt="Logo Musel">
+        </a>
+    </div>
+</div>
+
+<script>
+    const box = document.getElementById("loginBox");
+    const closeBtn = document.getElementById("closeBtn");
+    const lanjutBtn = document.getElementById("lanjutBtn");
+
+    // Fade-in saat halaman dibuka
+    window.addEventListener("load", () => {
+        setTimeout(() => {
+            box.classList.add("fade-in");
+        }, 100);
+    });
+
+    // Fade-out saat tombol X diklik
+    closeBtn.addEventListener("click", function() {
+        box.classList.remove("fade-in");
+        box.classList.add("fade-out");
+
+        setTimeout(function() {
+            if (document.referrer !== "") {
+                window.history.back();
+            } else {
+                window.location.href = "https://musel.com";
+            }
+        }, 500);
+    });
+
+    // Validasi & lanjutkan ke verifikasi
+    lanjutBtn.addEventListener("click", function() {
+        const phone = document.getElementById("phoneNumber").value.trim();
+
+        if (phone === "") {
+            alert("Nomor HP wajib diisi!");
+            return;
+        }
+        if (!/^08[0-9]{8,11}$/.test(phone)) {
+            alert("Nomor HP tidak valid! Harus diawali 08 dan panjang 10-13 digit.");
+            return;
+        }
+
+        // Jika valid → arahkan ke halaman verifikasi
+        window.location.href = "verifikasi.html?nomor=" + encodeURIComponent(phone);
+    });
+</script>
+
+</body>
+</html>

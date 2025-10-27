@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musel</title>
+    <style>
+        :root {
+            --primary-color: #0d1b3d;
+            --secondary-color: #f0f6ff;
+            --text-dark: #333;
+            --text-light: #f7f7f7;
+            --border-color: #ccc;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #222;
+            color: var(--text-light);
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        header {
+            background: #ABD7EB; /* warna biru langit muda */
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;   /* tetap diam saat scroll */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            color: var(--text-dark);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        .menu-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            position: relative;
+            left: -35px;
+            /* Geser ke kiri sejauh 35px */
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            z-index: 1000;
+            width: 200px;
+            overflow: hidden;
+            transform: translateY(10px);
+        }
+
+        .mobile-menu.show {
+            display: block;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Tabs *//* Tampilan input nomor telepon seperti contoh */
+.phone-input {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+  padding: 10px 8px;
+  border-radius: 4px;
+  transition: border-color 0.2s ease;
+}
+
+.phone-input:focus-within {
+  border-bottom: 1px solid #0d1b3d;
+}
+
+.phone-input .icon-phone {
+  width: 22px;
+  height: 22px;
+  background-image: url('https://cdn-icons-png.flaticon.com/512/483/483947.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-right: 10px;
+  opacity: 0.7;
+}
+
+.phone-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+  background: transparent;
+}
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: .2s;
+        }
+
+        .tab img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        /* Content Sections */
+        main {
+            padding-top: 80px; /* agar konten tidak tertutup header */
+        }
+
+        .content-section {
+            display: none;
+            padding: 15px;
+            color: var(--text-dark);
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Cards & Items */
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+            color: var(--text-dark);
+        }
+
+        .operator-info {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .operator-info img {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .operator-info a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px 16px;
+            gap: 10px;
+            background: #fff;
+            transition: .3s;
+            margin-bottom: 20px;
+        }
+
+        .input-box:focus-within {
+            border-color: var(--primary-color);
+            background: var(--secondary-color);
+        }
+
+        .input-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            background: transparent;
+            color: var(--text-dark);
+        }
+
+        .input-box span {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .item {
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: .2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+        }
+
+        .item:hover,
+        .item.selected {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item img {
+            width: 32px;
+            height: 32px;
+        }
+        
+        /* Table Styling */
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .product-table th, .product-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .product-table th {
+            background-color: var(--secondary-color);
+            font-weight: 600;
+        }
+        .product-table tbody tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        /* Hide items by default */
+        #pulsaItems, #kuotaItems, #lainnyaItems {
+            display: none;
+        }
+
+        /* Download Section */
+        .download-section {
+            background-color: var(--primary-color);
+            color: #fff;
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 15px;
+        }
+
+        .download-section h3, .download-section p {
+            margin: 0;
+        }
+
+        .download-section p {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .google-play-btn {
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .google-play-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .google-play-btn img {
+            width: 150px;
+            height: auto;
+        }
+
+        /* Register Section */
+        #registerSection {
+            margin: 15px;
+        }
+
+        #registerSection h3, #registerSection p {
+            color: var(--text-dark);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            margin: 6px 0;
+            cursor: pointer;
+            font-size: 15px;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            opacity: .9;
+        }
+
+        /* Footer */
+        footer {
+            background: #f1f1f1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .footer-col {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 16px;
+            color: var(--text-dark);
+        }
+
+        .footer-col a {
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+        
+        /* Gaya baru untuk elemen footer yang dapat diklik */
+        .footer-link {
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-social {
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-social img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .copyright {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .hero h2 {
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        #pulsaOperatorLogo, #kuotaOperatorLogo {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+        <img src="https://musel14.wordpress.com/wp-content/uploads/2025/09/wp-17577853544847632536777576567851.png" alt="Logo Musel">
+    </div>
+    <div class="menu-icon" onclick="toggleMenu()">
+        <a href=" Halaman 2 index.html">
+            <span style="font-size: 32px; color: var(--text-dark);">👤</span>
+        </a>
+    </div>
+</header>
+
+    <main>
+        <div class="hero">
+            <h2>Solusi Pengisian Pulsa dan Kuota Proses Cepat Harga Hemat</h2>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-target="pulsaList">
+                <img src="https://musel14.wordpress.com/wp-content/uploads/2025/10/pulsa4819851536162564070.png" alt="Pulsa"> 
+                <span>Pulsa</span>
+            </div>
+            <div class="tab" data-target="kuotaList">
+                <img src="https://musel14.wordpress.com/wp-content/uploads/2025/10/kuota1580464567844866358.png" alt="Paket Kuota">
+                <span>Paket Kuota</span>
+            </div>
+            <div class="tab" data-target="lainnyaList">
+                <img src="https://musel14.wordpress.com/wp-content/uploads/2025/10/lainnya8262301396335917917.png" alt="Lainnya">
+                <span>Lainnya</span>
+            </div>
+        </div>
+
+        <section id="pulsaList" class="content-section active">
+            <div class="card">
+                <div class="input-box">
+                    <span>📞</span>
+                    <input type="tel" id="pulsaPhone" placeholder="Masukkan nomor HP">
+                </div>
+                <div id="pulsaOperator" class="operator-info">
+                    <span id="pulsaOperatorName"></span>
+                </div>
+                <div id="pulsaItems"></div>
+            </div>
+        </section>
+
+        <section id="kuotaList" class="content-section">
+            <div class="card">
+                <div class="input-box">
+                    <span>📞</span>
+                    <input type="tel" id="kuotaPhone" placeholder="Masukkan nomor HP">
+                </div>
+                <div id="kuotaOperator" class="operator-info">
+                    <span id="kuotaOperatorName"></span>
+                </div>
+                <div id="kuotaItems"></div>
+            </div>
+        </section>
+
+        <section id="lainnyaList" class="content-section">
+            <div class="card">
+                <div class="input-box">
+                    <span></span>
+                    <input type="text" id="lainnyaSearch" placeholder="Cari produk lainnya">
+                </div>
+                <div id="lainnyaItems"></div>
+            </div>
+        </section>
+
+        <section class="download-section">
+            <h3>Download Aplikasi Musel</h3>
+            <p>Aplikasi kami tersedia di Google Play Store</p>
+            <a href="https://play.google.com/store/apps/details?id=com.musel" class="google-play-btn" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Download di Google Play">
+            </a>
+        </section>
+
+        <section id="registerSection" class="card">
+            <h3>Daftar / Masuk</h3>
+            <p>Verifikasi nomor Anda untuk melanjutkan transaksi.</p>
+            <div class="input-box">
+                <span>📞</span>
+                <input type="tel" id="regPhone" placeholder="Nomor HP untuk daftar/masuk">
+            </div>
+            <button class="btn" id="btnDaftar">Daftar</button>
+            <button class="btn" id="btnMasuk">Masuk</button>
+        </section>
+        
+        <section id="tentangMusel" class="content-section">
+            <div class="card">
+                <h3>Tentang Musel</h3>
+                <p>Musel adalah aplikasi terkemuka untuk pengisian pulsa, paket data, dan berbagai produk digital lainnya dengan proses cepat dan harga kompetitif. Kami berkomitmen untuk menyediakan layanan terbaik bagi para pengguna.</p>
+            </div>
+        </section>
+        
+        <section id="syaratKetentuan" class="content-section">
+            <div class="card">
+                <h3>Syarat & Ketentuan</h3>
+                <p>Silakan baca syarat dan ketentuan berikut dengan seksama sebelum menggunakan layanan kami. Dengan melanjutkan penggunaan, Anda dianggap telah menyetujui semua ketentuan yang berlaku.</p>
+                <ul>
+                    <li>Layanan ini hanya tersedia untuk pengguna terdaftar.</li>
+                    <li>Harga dapat berubah sewaktu-waktu tanpa pemberitahuan.</li>
+                    <li>Kami tidak bertanggung jawab atas kesalahan input nomor tujuan.</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="kontakKami" class="content-section">
+            <div class="card">
+                <h3>Kontak Kami</h3>
+                <p>Untuk pertanyaan atau bantuan, silakan hubungi tim dukungan kami:</p>
+                <ul>
+                    <li>Email: support@musel.com</li>
+                    <li>Telepon: 021-12345678</li>
+                </ul>
+            </div>
+        </section>
+        
+        <section id="liveChat" class="content-section">
+            <div class="card">
+                <h3>Live Chat</h3>
+                <p>Silakan gunakan fitur live chat untuk terhubung langsung dengan tim dukungan kami.</p>
+            </div>
+        </section>
+        
+    </main>
+
+    <footer>
+        <div class="footer-col">
+            <div class="footer-link" data-target="tentangMusel">Tentang Musel</div>
+            <div class="footer-link" data-target="syaratKetentuan">Syarat & Ketentuan</div>
+            <div class="footer-link" data-target=""kontakKami"">Kontak Kami</div>
+            <div class="footer-link" data-target="liveChat">Live Chat</div>
+        </div>
+        <div class="footer-social">
+            <a href="https://www.facebook.com/musel" target="_blank">
+                <img src="https://musel14.wordpress.com/wp-content/uploads/2025/10/wp-17615264432765401345880240306055.png" alt="Facebook">
+            </a>
+            <a href="https://www.instagram.com/musel" target="_blank">
+                <img src="https://musel14.wordpress.com/wp-content/uploads/2025/10/wp-17615264434142845250463514897769.png" alt="Instagram">
+            </a>
+            <a href="https://www.tiktok.com/@musel" target="_blank">
+                <img src="https://musel14.wordpress.com/wp-content/uploads/2025/10/wp-17615264435323360416698049692146.png" alt="TikTok">
+            </a>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Musel. Semua hak cipta dilindungi.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const operators = {
+    // Telkomsel
+    '0811': { name: 'Telkomsel' },
+    '0812': { name: 'Telkomsel' },
+    '0813': { name: 'Telkomsel' },
+    '0821': { name: 'Telkomsel' },
+    '0822': { name: 'Telkomsel' },
+    '0823': { name: 'Telkomsel' },
+    '0851': { name: 'Byu' },
+    '0852': { name: 'Telkomsel' },
+    '0853': { name: 'Telkomsel' },
+
+    // Indosat
+    '0814': { name: 'Indosat' },
+    '0815': { name: 'Indosat' },
+    '0816': { name: 'Indosat' },
+    '0855': { name: 'Indosat' },
+    '0856': { name: 'Indosat' },
+    '0857': { name: 'Indosat' },
+    '0858': { name: 'Indosat' },
+
+    // XL
+    '0817': { name: 'XL' },
+    '0818': { name: 'XL' },
+    '0819': { name: 'XL' },
+    '0859': { name: 'XL' },
+    '0877': { name: 'XL' },
+    '0878': { name: 'XL' },
+
+    // Tri (3)
+    '0895': { name: 'Tri' },
+    '0896': { name: 'Tri' },
+    '0897': { name: 'Tri' },
+    '0898': { name: 'Tri' },
+    '0899': { name: 'Tri' },
+
+    // Axis
+    '0831': { name: 'Axis' },
+    '0832': { name: 'Axis' },
+    '0833': { name: 'Axis' },
+    '0838': { name: 'Axis' },
+
+    // Smartfren
+    '0881': { name: 'Smartfren' },
+    '0882': { name: 'Smartfren' },
+    '0883': { name: 'Smartfren' },
+    '0884': { name: 'Smartfren' },
+    '0885': { name: 'Smartfren' },
+    '0886': { name: 'Smartfren' },
+    '0887': { name: 'Smartfren' },
+    '0888': { name: 'Smartfren' },
+    '0889': { name: 'Smartfren' }
+};
+
+            const pulsaData = [
+                { nominal: '3.000', price: '3.800' },
+                { nominal: '5.000', price: '5.800' },
+                { nominal: '10.000', price: '10.500' },
+                { nominal: '25.000', price: '25.500' },
+                { nominal: '50.000', price: '50.200' },
+                { nominal: '100.000', price: '100.200' },
+            ];
+            
+            const kuotaData = [
+                { name: 'Kuota 1 GB', validity: '30 hari', price: 'Rp. 15.000' },
+                { name: 'Kuota 5 GB', validity: '30 hari', price: 'Rp. 40.000' },
+                { name: 'Kuota 10 GB', validity: '30 hari', price: 'Rp. 65.000' },
+                { name: 'Kuota 100 GB', validity: '30 hari', price: 'Rp. 150.000' },
+            ];
+
+            const othersData = [
+                { name: 'Token PLN', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/token7212497219112806733.png', nominals: [
+                    { nominal: '10.000', price: '12.000' },
+                    { nominal: '15.000', price: '17.000' },
+                    { nominal: '20.000', price: '22.000' },
+                    { nominal: '50.000', price: '52.000' },
+                    { nominal: '100.000', price: '102.000' },
+                    { nominal: '150.000', price: '152.000' },
+                ]},
+                { name: 'Tagihan Listrik', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/tagihan7781548314967488374.png' },
+                { name: 'Voucher Game', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/game6207442703701932582.png' },
+                { name: 'BPJS Kesehatan', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/bpjs6443045086094571108.png' },
+                { name: 'Pembayaran WiFi', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/wifi4025639454292165986.png' },
+                { name: 'DANA', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/ewallet4193929401037668919.png' },
+                { name: 'GoPay', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/ewallet4193929401037668919.png' },
+                { name: 'OVO', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/ewallet4193929401037668919.png' },
+                { name: 'ShopeePay', logo: 'https://musel14.wordpress.com/wp-content/uploads/2025/10/ewallet4193929401037668919.png' },
+            ];
+
+            const findOperator = (phoneNumber) => {
+                for (const prefix in operators) {
+                    if (phoneNumber.startsWith(prefix)) {
+                        return operators[prefix];
+                    }
+                }
+                return null;
+            };
+
+            const updateOperatorInfo = (inputElement, operatorInfoElement, operatorNameElement, itemsContainer) => {
+                const phone = inputElement.value;
+                const operator = findOperator(phone);
+                
+                if (phone.length >= 4 && operator) {
+                    operatorInfoElement.style.display = 'flex';
+                    operatorNameElement.textContent = operator.name;
+                    
+                    if (itemsContainer.id === 'pulsaItems') {
+                        generatePulsaTable(itemsContainer);
+                    } else if (itemsContainer.id === 'kuotaItems') {
+                        generateKuotaTable(itemsContainer);
+                    }
+                    itemsContainer.style.display = 'block';
+                } else {
+                    operatorInfoElement.style.display = 'none';
+                    itemsContainer.style.display = 'none';
+                }
+            };
+            
+            const generatePulsaTable = (container) => {
+                container.innerHTML = `
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>Deskripsi</th>
+                                <th>Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${pulsaData.map(item => `
+                                <tr class="item">
+                                    <td>Pulsa ${item.nominal}</td>
+                                    <td>Rp. ${item.price}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            };
+
+            const generateKuotaTable = (container) => {
+                container.innerHTML = `
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>Deskripsi</th>
+                                <th>Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${kuotaData.map(item => `
+                                <tr class="item">
+                                    <td>${item.name} (${item.validity})</td>
+                                    <td>${item.price}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            };
+            
+            const generateOthersList = (container, searchKeyword = '') => {
+                container.innerHTML = '';
+                const filteredData = othersData.filter(item => item.name.toLowerCase().includes(searchKeyword.toLowerCase()));
+
+                if (filteredData.length > 0) {
+                    filteredData.forEach(item => {
+                        const div = document.createElement('div');
+                        div.classList.add('item');
+                        div.innerHTML = `
+                            <div class="left">
+                                <img src="${item.logo}" alt="${item.name}">
+                                <span>${item.name}</span>
+                            </div>
+                        `;
+                        div.addEventListener('click', () => {
+                            if (item.name === 'Token PLN') {
+                                displayPlnNominals();
+                            } else {
+                                document.getElementById('registerSection').scrollIntoView({ behavior: 'smooth' });
+                            }
+                        });
+                        container.appendChild(div);
+                    });
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                }
+            };
+
+            const displayPlnNominals = () => {
+                const lainnyaItems = document.getElementById('lainnyaItems');
+                lainnyaItems.innerHTML = `
+                    <h3>Token PLN</h3>
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>Nominal</th>
+                                <th>Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${othersData.find(item => item.name === 'Token PLN').nominals.map(nominal => `
+                                <tr class="item">
+                                    <td>${nominal.nominal}</td>
+                                    <td>${nominal.price}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+                const newItems = lainnyaItems.querySelectorAll('.item');
+                newItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        document.getElementById('registerSection').scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+            };
+
+            document.getElementById('pulsaPhone').addEventListener('input', (e) => {
+                updateOperatorInfo(e.target, document.getElementById('pulsaOperator'), document.getElementById('pulsaOperatorName'), document.getElementById('pulsaItems'));
+            });
+
+            document.getElementById('kuotaPhone').addEventListener('input', (e) => {
+                updateOperatorInfo(e.target, document.getElementById('kuotaOperator'), document.getElementById('kuotaOperatorName'), document.getElementById('kuotaItems'));
+            });
+
+            document.getElementById('lainnyaSearch').addEventListener('input', (e) => {
+                generateOthersList(document.getElementById('lainnyaItems'), e.target.value);
+            });
+
+            generateOthersList(document.getElementById('lainnyaItems'));
+            
+            const toggleMenu = () => {
+                const menu = document.getElementById('mobileMenu');
+                menu.classList.toggle('show');
+            };
+            window.toggleMenu = toggleMenu;
+
+            const tabs = document.querySelectorAll('.tab');
+            const contentSections = document.querySelectorAll('.content-section');
+            const footerLinks = document.querySelectorAll('.footer-link');
+
+            const activateSection = (targetId) => {
+                contentSections.forEach(c => c.classList.remove('active'));
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    activateSection(tab.dataset.target);
+                });
+            });
+
+            footerLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    activateSection(link.dataset.target);
+                });
+            });
+            
+            const addScrollListenerToItems = () => {
+                const itemsToScroll = document.querySelectorAll('.product-table tbody tr');
+                itemsToScroll.forEach(item => {
+                    item.addEventListener('click', () => {
+                        document.getElementById('registerSection').scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+            };
+
+            document.getElementById('pulsaPhone').addEventListener('input', (e) => {
+                updateOperatorInfo(e.target, document.getElementById('pulsaOperator'), document.getElementById('pulsaOperatorName'), document.getElementById('pulsaItems'));
+                addScrollListenerToItems();
+            });
+
+            document.getElementById('kuotaPhone').addEventListener('input', (e) => {
+                updateOperatorInfo(e.target, document.getElementById('kuotaOperator'), document.getElementById('kuotaOperatorName'), document.getElementById('kuotaItems'));
+                addScrollListenerToItems();
+            });
+        });
+    </script>
+</body>
+</html>
